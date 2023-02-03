@@ -1,0 +1,16 @@
+<div class="container">
+  <h1>Enter password:</h1>
+  <form [formGroup]="form">
+    <fieldset>
+      <fieldset class="form-group">
+        <input type="text" id="password" class="form-control" placeholder="Password" formControlName="password" />
+      </fieldset>
+      <div class="password-strength-bar">
+        <div class="pass-bar" [ngStyle]="{ backgroundColor: easyBarColor }">easy password
+        </div>
+        <div class="medium pass-bar" [ngStyle]="{ backgroundColor: mediumBarColor }">medium password</div>
+        <div class="strong pass-bar" [ngStyle]="{ backgroundColor: strongBarColor }">strong password</div>
+      </div>
+    </fieldset>
+  </form>
+</div>
