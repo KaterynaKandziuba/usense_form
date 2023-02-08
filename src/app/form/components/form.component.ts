@@ -8,6 +8,14 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 
+enum PasswordValidationClasses {
+  Empty = 'empty-pass',
+  Short = 'short-pass',
+  Easy = 'easy-pass',
+  Medium = 'medium-pass',
+  Strong = 'strong-pass',
+}
+
 @Component({
   selector: 'us-form',
   styleUrls: ['./form.component.scss'],
@@ -15,13 +23,6 @@ import {
 })
 export class FormComponent implements OnInit {
   form!: FormGroup;
-  colors = {
-    gray: 'rgb(190, 188, 188)',
-    green: 'rgb(6, 133, 61)',
-    yellow: 'rgb(255, 230, 0)',
-    red: 'rgb(219, 31, 78)',
-  };
-
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -59,44 +60,16 @@ export class FormComponent implements OnInit {
     };
   }
 
-  get easyBarColor() {
-    if (this.getPasswordStrength().isEmpty) return this.colors.gray;
-    if (this.getPasswordStrength().isShort || this.getPasswordStrength().isEasy)
-      return this.colors.red;
-    if (this.getPasswordStrength().isMedium) return this.colors.yellow;
-    if (this.getPasswordStrength().isStrong) return this.colors.green;
-    else return this.colors.red;
-  }
-
-  get mediumBarColor() {
-    if (this.getPasswordStrength().isShort) return this.colors.red;
-    if (this.getPasswordStrength().isMedium) return this.colors.yellow;
-    if (this.getPasswordStrength().isStrong) return this.colors.green;
-    else return this.colors.gray;
-  }
-
-  get strongBarColor() {
-    if (this.getPasswordStrength().isShort) return this.colors.red;
-    if (this.getPasswordStrength().isMedium) return this.colors.gray;
-    if (this.getPasswordStrength().isStrong) return this.colors.green;
-    else return this.colors.gray;
-  }
-
-  getPasswordStrength() {
+  get passwordStrength(): string {
     const errors = this.form.get('password')?.errors;
     const isEmpty = !this.form.get('password')?.value.length;
-    const isShort =
-      this.form.get('password')?.value.length &&
-      this.form.get('password')?.value.length < 8;
     const isEasy = errors!['easy'] && !errors!['medium'] && !errors!['strong'];
     const isMedium = errors!['medium'] && !errors!['strong'];
     const isStrong = errors!['strong'];
-    return {
-      isEmpty,
-      isShort,
-      isEasy,
-      isMedium,
-      isStrong,
-    };
+    if (isStrong) return PasswordValidationClasses.Strong;
+    else if (isMedium) return PasswordValidationClasses.Medium;
+    else if (isEasy) return PasswordValidationClasses.Easy;
+    else if (isEmpty) return PasswordValidationClasses.Empty;
+    else return PasswordValidationClasses.Short;
   }
 }
