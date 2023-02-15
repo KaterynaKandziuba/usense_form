@@ -1,16 +1,11 @@
 <div class="container">
   <h1>Enter password:</h1>
-  <form [formGroup]="form">
+  <form>
     <fieldset>
       <fieldset class="form-group">
-        <input type="text" id="password" class="form-control" placeholder="Password" formControlName="password" />
+        <us-pwd-input [formControl]="passwordControl"></us-pwd-input>
       </fieldset>
-      <div class="password-strength-bar" [ngClass]="passwordStrength">
-        <div class="easy pass-bar">easy password
-        </div>
-        <div class="medium pass-bar">medium password</div>
-        <div class="strong pass-bar">strong password</div>
-      </div>
+      <us-pwd-validators [passwordStrengthClass]="passwordStrengthClass"></us-pwd-validators>
     </fieldset>
   </form>
 </div>

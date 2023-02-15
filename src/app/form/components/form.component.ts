@@ -1,38 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
   FormControl,
-  FormGroup,
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-
-enum PasswordValidationClasses {
-  Empty = 'empty-pass',
-  Short = 'short-pass',
-  Easy = 'easy-pass',
-  Medium = 'medium-pass',
-  Strong = 'strong-pass',
-}
+import { PasswordValidationClasses } from 'src/app/types/passwordValidationClasses.enum';
 
 @Component({
   selector: 'us-form',
   styleUrls: ['./form.component.scss'],
   templateUrl: './form.component.html',
 })
-export class FormComponent implements OnInit {
-  form!: FormGroup;
-  constructor(private fb: FormBuilder) {}
+export class FormComponent implements DoCheck {
+  readonly passwordControl = new FormControl('', [
+    this.passwordStrengthValidator(),
+  ]);
+  private errors!: ValidationErrors | null;
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  initializeForm(): void {
-    this.form = this.fb.group({
-      password: new FormControl('', [this.passwordStrengthValidator()]),
-    });
+  ngDoCheck() {
+    this.errors = this.passwordControl?.errors;
   }
 
   passwordStrengthValidator(): ValidatorFn {
@@ -46,30 +33,39 @@ export class FormComponent implements OnInit {
       const easyRegex = new RegExp(
         '^((?=.*[a-zA-Z])|(?=.*[0-9])|(?=.*[.,?!@#$%^&*]))(?=.{8,})'
       );
-      const strong = strongRegex.test(control.value);
-      const medium = mediumRegex.test(control.value);
-      const easy = easyRegex.test(control.value);
-      const short = !easy && control.value.length;
       const errors = {
-        short,
-        easy,
-        medium,
-        strong,
+        short: !easyRegex.test(control.value) && control.value.length > 0,
+        easy: easyRegex.test(control.value),
+        medium: mediumRegex.test(control.value),
+        strong: strongRegex.test(control.value),
       };
       return errors ?? null;
     };
   }
 
-  get passwordStrength(): string {
-    const errors = this.form.get('password')?.errors;
-    const isEmpty = !this.form.get('password')?.value.length;
-    const isEasy = errors!['easy'] && !errors!['medium'] && !errors!['strong'];
-    const isMedium = errors!['medium'] && !errors!['strong'];
-    const isStrong = errors!['strong'];
-    if (isStrong) return PasswordValidationClasses.Strong;
-    else if (isMedium) return PasswordValidationClasses.Medium;
-    else if (isEasy) return PasswordValidationClasses.Easy;
-    else if (isEmpty) return PasswordValidationClasses.Empty;
+  get passwordStrengthClass(): string {
+    if (this.isStrong) return PasswordValidationClasses.Strong;
+    else if (this.isMedium) return PasswordValidationClasses.Medium;
+    else if (this.isEasy) return PasswordValidationClasses.Easy;
+    else if (this.isEmpty) return PasswordValidationClasses.Empty;
     else return PasswordValidationClasses.Short;
+  }
+
+  get isEasy(): boolean {
+    return (
+      this.errors!['easy'] && !this.errors!['medium'] && !this.errors!['strong']
+    );
+  }
+
+  get isMedium(): boolean {
+    return this.errors!['medium'] && !this.errors!['strong'];
+  }
+
+  get isStrong(): boolean {
+    return this.errors!['strong'];
+  }
+
+  get isEmpty(): boolean {
+    return !this.passwordControl?.value?.length;
   }
 }

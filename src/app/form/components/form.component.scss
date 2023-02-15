@@ -1,9 +1,5 @@
 $side-margin: 5px;
 $border-radius: 15px;
-$gray: rgb(190, 188, 188);
-$green: rgb(6, 133, 61);
-$yellow: rgb(255, 230, 0);
-$red: rgb(219, 31, 78);
 
 .container {
   font-family: Arial, Helvetica, sans-serif;
@@ -31,80 +27,5 @@ fieldset {
     background-color: white;
     border: rgb(198, 198, 198);
     border-radius: $border-radius;
-
-    .form-control {
-      width: 100%;
-
-      border: none;
-      font-size: 18px;
-      line-height: 200%;
-    }
-
-    input:focus {
-      outline: none;
-    }
-  }
-}
-
-.pass-bar {
-  background-color: $gray;
-  max-width: 200px;
-  min-width: fit-content;
-  height: 16px;
-
-  padding: 2px 10px;
-  margin: $side-margin;
-  border-radius: $border-radius;
-
-  color: white;
-  font-size: 12px;
-  line-height: 130%;
-}
-
-.empty-pass .pass-bar {
-  background-color: $gray;
-}
-
-.short-pass {
-  .easy {
-    background-color: $red;
-  }
-
-  .medium {
-    background-color: $red;
-  }
-
-  .strong {
-    background-color: $red;
-  }
-}
-
-.easy-pass {
-  .easy {
-    background-color: $red;
-  }
-}
-
-.medium-pass {
-  .easy {
-    background-color: $yellow;
-  }
-
-  .medium {
-    background-color: $yellow;
-  }
-}
-
-.strong-pass {
-  .easy {
-    background-color: $green;
-  }
-
-  .medium {
-    background-color: $green;
-  }
-
-  .strong {
-    background-color: $green;
   }
 }
